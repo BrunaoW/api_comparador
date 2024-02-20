@@ -1954,6 +1954,16 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CurrencyInput_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CurrencyInput.vue */ "./resources/js/components/CurrencyInput.vue");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : String(i); }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1962,7 +1972,6 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       isFormValid: false,
-      dinheiroEmprestimo: '',
       institutionList: [],
       insuranceList: [],
       installmentsList: [36, 48, 60, 72, 84],
@@ -1972,7 +1981,9 @@ __webpack_require__.r(__webpack_exports__);
       currencyValue: 0.0,
       selectedInstitutions: [],
       selectedInsurances: [],
-      installments: null
+      installmentsSelected: null,
+      // Resultado Simulacao
+      loanSimulationInfo: {}
     };
   },
   mounted: function mounted() {
@@ -1986,7 +1997,6 @@ __webpack_require__.r(__webpack_exports__);
         if (res.data.error) {
           _this.errorMsg = res.data.message;
         } else {
-          console.log(res.data);
           _this.institutionList = res.data;
         }
       });
@@ -1997,7 +2007,6 @@ __webpack_require__.r(__webpack_exports__);
         if (res.data.error) {
           _this2.errorMsg = res.data.message;
         } else {
-          console.log(res.data);
           _this2.insuranceList = res.data;
         }
       });
@@ -2011,7 +2020,6 @@ __webpack_require__.r(__webpack_exports__);
         this.selectedInstitutions.push(institution);
       }
       this.dummySelectedInstitution = '';
-      console.log(this.selectedInstitutions);
     },
     selectInsurances: function selectInsurances(event) {
       var insurance = event.target.value;
@@ -2022,22 +2030,27 @@ __webpack_require__.r(__webpack_exports__);
         this.selectedInsurances.push(insurance);
       }
       this.dummySelectedInsurance = '';
-      console.log(this.selectedInsurances);
     },
     getSimulationInfo: function getSimulationInfo() {
       var _this3 = this;
+      var loanedMoney = parseFloat(this.currencyValue.replace('.', '').replace(',', '.'));
       var simulateReqBody = {
-        "valor_emprestimo": this.currencyValue,
+        "valor_emprestimo": loanedMoney,
         "instituicoes": this.selectedInstitutions,
         "convenios": this.selectedInsurances,
-        "parcela": this.installments
+        "parcela": this.installmentsSelected
       };
-      console.log(simulateReqBody);
       axios.post("http://localhost:8000/api/simular", simulateReqBody).then(function (res) {
         if (res.data.error) {
           _this3.errorMsg = res.data.message;
         } else {
-          console.log(res.data);
+          var institutionKeys = Object.keys(res.data);
+          _this3.loanSimulationInfo = {
+            loanMoney: loanedMoney,
+            loanInfoPerInstitution: _toConsumableArray(institutionKeys.map(function (ik) {
+              return _defineProperty({}, ik, res.data[ik]);
+            }))
+          };
         }
       });
     }
@@ -2106,8 +2119,9 @@ var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
-    staticClass: "container"
+    staticClass: "container py-5"
   }, [_c("h2", [_vm._v("Simulação de empréstimo")]), _vm._v(" "), _c("form", {
+    staticClass: "pb-3",
     attrs: {
       method: "post"
     }
@@ -2123,9 +2137,15 @@ var render = function render() {
   }, [_vm._v("Valor do empréstimo:")]), _vm._v(" "), _c("currency-input", {
     attrs: {
       "input-class": "form-control",
-      "input-id": "dinheiroForm",
-      currencyValue: _vm.currencyValue,
-      isValid: _vm.isFormValid
+      "input-id": "dinheiroForm"
+    },
+    on: {
+      currencyValue: function currencyValue($event) {
+        _vm.currencyValue = $event;
+      },
+      isValid: function isValid($event) {
+        _vm.isFormValid = $event;
+      }
     }
   })], 1), _vm._v(" "), _c("div", {
     staticClass: "col form-group"
@@ -2168,8 +2188,10 @@ var render = function render() {
       domProps: {
         value: institution.chave
       }
-    }, [_vm._v(_vm._s(institution.valor) + "\n                    ")]);
-  })], 2)])]), _vm._v(" "), _c("div", {
+    }, [_vm._v("\n                        " + _vm._s(institution.valor) + "\n                    ")]);
+  })], 2), _vm._v(" "), _vm.selectedInstitutions.length > 0 ? _c("small", [_vm._v("\n                    " + _vm._s(_vm.selectedInstitutions.reduce(function (acc, inst) {
+    return "".concat(acc, ", ").concat(inst);
+  })) + "\n                ")]) : _vm._e()])]), _vm._v(" "), _c("div", {
     staticClass: "form-row pb-2"
   }, [_c("div", {
     staticClass: "col form-group"
@@ -2213,7 +2235,9 @@ var render = function render() {
         value: insurance.chave
       }
     }, [_vm._v(_vm._s(insurance.valor) + "\n                    ")]);
-  })], 2)]), _vm._v(" "), _c("div", {
+  })], 2), _vm._v(" "), _vm.selectedInsurances.length > 0 ? _c("small", [_vm._v("\n                    " + _vm._s(_vm.selectedInsurances.reduce(function (acc, insu) {
+    return "".concat(acc, ", ").concat(insu);
+  })) + "\n                ")]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "col form-group"
   }, [_c("label", {
     staticClass: "form-label",
@@ -2221,12 +2245,26 @@ var render = function render() {
       "for": "parcelasForm"
     }
   }, [_vm._v("Parcelas:")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.installmentsSelected,
+      expression: "installmentsSelected"
+    }],
     staticClass: "form-select form-control",
     attrs: {
       id: "parcelasForm"
     },
-    domProps: {
-      value: _vm.installments
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.installmentsSelected = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
     }
   }, [_c("option", {
     attrs: {
@@ -2236,9 +2274,9 @@ var render = function render() {
     }
   }, [_vm._v("Escolha a quantidade de parcelas")]), _vm._v(" "), _vm._l(_vm.installmentsList, function (installments) {
     return _c("option", {
-      key: installments.chave,
+      key: installments,
       domProps: {
-        value: installments.chave
+        value: installments
       }
     }, [_vm._v(_vm._s(installments) + "\n                    ")]);
   })], 2)])]), _vm._v(" "), _c("button", {
@@ -2249,9 +2287,41 @@ var render = function render() {
     on: {
       click: _vm.getSimulationInfo
     }
-  }, [_vm._v("Enviar")])])]);
+  }, [_vm._v("Enviar")])]), _vm._v(" "), _vm._l(_vm.loanSimulationInfo.loanInfoPerInstitution, function (simulation) {
+    return _c("div", {
+      staticClass: "institution-info"
+    }, [_c("h4", [_vm._v(_vm._s(Object.keys(simulation)[0]))]), _vm._v(" "), _c("table", {
+      staticClass: "table"
+    }, [_vm._m(0, true), _vm._v(" "), _c("tbody", _vm._l(Object.values(simulation)[0], function (loanPlan) {
+      return _c("tr", [_c("td", [_vm._v("R$ " + _vm._s(_vm.loanSimulationInfo.loanMoney))]), _vm._v(" "), _c("td", [_c("b", [_vm._v(_vm._s(loanPlan["parcelas"]))])]), _vm._v(" "), _c("td", [_c("b", [_vm._v("R$ " + _vm._s(loanPlan["valor_parcela"].toFixed(2)))])]), _vm._v(" "), _c("td", [_c("b", [_vm._v("R$ " + _vm._s((loanPlan["valor_parcela"] * loanPlan["parcelas"]).toFixed(2)))])]), _vm._v(" "), _c("td", [_vm._v(_vm._s(loanPlan["taxa"]) + "%")])]);
+    }), 0)])]);
+  })], 2);
 };
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("thead", [_c("tr", [_c("th", {
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Valor solicitado")]), _vm._v(" "), _c("th", {
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Parcelas")]), _vm._v(" "), _c("th", {
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Valor por parcela")]), _vm._v(" "), _c("th", {
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Total (valor x parcela)")]), _vm._v(" "), _c("th", {
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Taxa de juros ao mês")])])]);
+}];
 render._withStripped = true;
 
 
