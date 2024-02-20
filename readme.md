@@ -24,6 +24,6 @@ E entrar no link do localhost `http://localhost:8000/`
 
 - Aqui algumas considerações a respeito do teste executado:
 
-    - Não foi possível implementar as funções no backend `filtrarConvenio()` e `filtrarParcelas()` a tempo. Tive dificuldades em compreender como a tarefa de filtrar um array é realizada em PHP.
-    - Seria interessante incluir um pequeno guia no enunciado do teste informando a configuração do PHP na versão correta do projeto. A que eu possui instalada em meu computador era a versão mais recente e demorei a iniciar o teste devido a uma dificuldade em identificar e trocar a versão do PHP correta.
-    - Seria uma boa também atualizar a versão do Vue da 2 pra 3, visto que é a versão mais antiga e que foi descontinuada, o que dificultou a inclusão de libs utilitárias para implementar o front, devido a incompatibilidade de versões.
+    - Não foi possível implementar as funções no backend `filtrarConvenio()` e `filtrarParcelas()` a tempo. Tive dificuldades em compreender a tempo como a tarefa de filtrar um array é realizada em PHP.
+    - Seria interessante incluir um pequeno guia no enunciado do teste informando a configuração do PHP na versão correta do projeto. A que eu possuia até então em meu computador era a versão mais recente, e por isso demorei um pouco a iniciar o teste por essa dificuldade em identificar e trocar a versão do PHP correta.
+    - Seria uma boa também atualizar a versão do Vue da 2 pra 3, visto que é a versão mais antiga, e que foi descontinuada, o que dificultou a inclusão de libs utilitárias para implementar o front, devido a incompatibilidade de versões.
