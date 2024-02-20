@@ -5,6 +5,8 @@ import 'bootstrap/dist/js/bootstrap.js';
 
 window.Vue = require('vue');
 
+Vue.component('currency-input', require('./components/CurrencyInput.vue').default);
+
 Vue.component('home-component', require('./components/Home.vue').default);
 
 const app = new Vue({

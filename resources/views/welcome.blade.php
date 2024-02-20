@@ -65,7 +65,7 @@
     </head>
     <body>
         <div id="app" class="full-height flex-center">
-            <home-component></example-component>
+            <home-component></home-component>
         </div>
         <script src="{{ mix('js/app.js') }}"></script>
     </body>

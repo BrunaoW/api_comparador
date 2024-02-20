@@ -1899,6 +1899,51 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CurrencyInput.vue?vue&type=script&lang=js":
+/*!***********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CurrencyInput.vue?vue&type=script&lang=js ***!
+  \***********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      currencyText: ''
+    };
+  },
+  props: {
+    inputClass: {
+      type: String,
+      "default": ''
+    },
+    inputId: {
+      type: String,
+      "default": ''
+    }
+  },
+  methods: {
+    updateValue: function updateValue(event) {
+      var value = event.target.value.replace('.', '').replace(',', '').replace(/\D/g, '');
+      if (value == '') {
+        value = '0';
+      }
+      var options = {
+        minimumFractionDigits: 2
+      };
+      var result = new Intl.NumberFormat('pt-BR', options).format(parseFloat(value) / 100);
+      console.log(result);
+      this.$emit('currencyValue', result);
+      this.$emit('isValid', result > 0.0);
+      this.currencyText = 'R$ ' + result;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Home.vue?vue&type=script&lang=js":
 /*!**************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Home.vue?vue&type=script&lang=js ***!
@@ -1908,11 +1953,141 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CurrencyInput_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CurrencyInput.vue */ "./resources/js/components/CurrencyInput.vue");
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    CurrencyInput: _CurrencyInput_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  data: function data() {
+    return {
+      isFormValid: false,
+      dinheiroEmprestimo: '',
+      institutionList: [],
+      insuranceList: [],
+      installmentsList: [36, 48, 60, 72, 84],
+      dummySelectedInstitution: '',
+      dummySelectedInsurance: '',
+      // valores forms:
+      currencyValue: 0.0,
+      selectedInstitutions: [],
+      selectedInsurances: [],
+      installments: null
+    };
+  },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    this.getInstitutionList();
+    this.getInsuranceList();
+  },
+  methods: {
+    getInstitutionList: function getInstitutionList() {
+      var _this = this;
+      axios.get('http://localhost:8000/api/instituicao').then(function (res) {
+        if (res.data.error) {
+          _this.errorMsg = res.data.message;
+        } else {
+          console.log(res.data);
+          _this.institutionList = res.data;
+        }
+      });
+    },
+    getInsuranceList: function getInsuranceList() {
+      var _this2 = this;
+      axios.get('http://localhost:8000/api/convenio').then(function (res) {
+        if (res.data.error) {
+          _this2.errorMsg = res.data.message;
+        } else {
+          console.log(res.data);
+          _this2.insuranceList = res.data;
+        }
+      });
+    },
+    selectInstitution: function selectInstitution(event) {
+      var institution = event.target.value;
+      var institutionIndex = this.selectedInstitutions.indexOf(institution);
+      if (institutionIndex > -1) {
+        this.selectedInstitutions.splice(institutionIndex, 1);
+      } else {
+        this.selectedInstitutions.push(institution);
+      }
+      this.dummySelectedInstitution = '';
+      console.log(this.selectedInstitutions);
+    },
+    selectInsurances: function selectInsurances(event) {
+      var insurance = event.target.value;
+      var insuranceIndex = this.selectedInsurances.indexOf(insurance);
+      if (insuranceIndex > -1) {
+        this.selectedInsurances.splice(insuranceIndex, 1);
+      } else {
+        this.selectedInsurances.push(insurance);
+      }
+      this.dummySelectedInsurance = '';
+      console.log(this.selectedInsurances);
+    },
+    getSimulationInfo: function getSimulationInfo() {
+      var _this3 = this;
+      var simulateReqBody = {
+        "valor_emprestimo": this.currencyValue,
+        "instituicoes": this.selectedInstitutions,
+        "convenios": this.selectedInsurances,
+        "parcela": this.installments
+      };
+      console.log(simulateReqBody);
+      axios.post("http://localhost:8000/api/simular", simulateReqBody).then(function (res) {
+        if (res.data.error) {
+          _this3.errorMsg = res.data.message;
+        } else {
+          console.log(res.data);
+        }
+      });
+    }
   }
 });
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CurrencyInput.vue?vue&type=template&id=22dd315e":
+/*!*********************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CurrencyInput.vue?vue&type=template&id=22dd315e ***!
+  \*********************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.currencyText,
+      expression: "currencyText"
+    }],
+    "class": _vm.inputClass,
+    attrs: {
+      type: "text",
+      id: _vm.inputId,
+      required: ""
+    },
+    domProps: {
+      value: _vm.currencyText
+    },
+    on: {
+      keyup: _vm.updateValue,
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.currencyText = $event.target.value;
+      }
+    }
+  });
+};
+var staticRenderFns = [];
+render._withStripped = true;
+
 
 /***/ }),
 
@@ -1930,14 +2105,13 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _vm._m(0);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
   return _c("div", {
     staticClass: "container"
-  }, [_c("h2", [_vm._v("Simulação de empréstimo")]), _vm._v(" "), _c("form", [_c("div", {
+  }, [_c("h2", [_vm._v("Simulação de empréstimo")]), _vm._v(" "), _c("form", {
+    attrs: {
+      method: "post"
+    }
+  }, [_c("div", {
     staticClass: "form-row pb-2"
   }, [_c("div", {
     staticClass: "col form-group"
@@ -1946,27 +2120,56 @@ var staticRenderFns = [function () {
     attrs: {
       "for": "dinheiroForm"
     }
-  }, [_vm._v("Valor do empréstimo:")]), _vm._v(" "), _c("input", {
-    staticClass: "form-control",
+  }, [_vm._v("Valor do empréstimo:")]), _vm._v(" "), _c("currency-input", {
     attrs: {
-      type: "text",
-      id: "dinheiroForm",
-      placeholder: "R$ 0,00",
-      "data-type": "currency"
+      "input-class": "form-control",
+      "input-id": "dinheiroForm",
+      currencyValue: _vm.currencyValue,
+      isValid: _vm.isFormValid
     }
-  })]), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _c("div", {
     staticClass: "col form-group"
   }, [_c("label", {
     staticClass: "form-label",
     attrs: {
       "for": "instituicaoForm"
     }
-  }, [_vm._v("Instituição:")]), _vm._v(" "), _c("select", {
+  }, [_vm._v("Banco:")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.dummySelectedInstitution,
+      expression: "dummySelectedInstitution"
+    }],
     staticClass: "form-select form-control",
     attrs: {
       id: "instituicaoForm"
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.dummySelectedInstitution = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, _vm.selectInstitution]
     }
-  })])]), _vm._v(" "), _c("div", {
+  }, [_c("option", {
+    attrs: {
+      value: "",
+      disabled: "",
+      selected: ""
+    }
+  }, [_vm._v("Escolha uma instituição")]), _vm._v(" "), _vm._l(_vm.institutionList, function (institution) {
+    return _c("option", {
+      key: institution.chave,
+      domProps: {
+        value: institution.chave
+      }
+    }, [_vm._v(_vm._s(institution.valor) + "\n                    ")]);
+  })], 2)])]), _vm._v(" "), _c("div", {
     staticClass: "form-row pb-2"
   }, [_c("div", {
     staticClass: "col form-group"
@@ -1976,11 +2179,41 @@ var staticRenderFns = [function () {
       "for": "convenioForm"
     }
   }, [_vm._v("Convênio:")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.dummySelectedInsurance,
+      expression: "dummySelectedInsurance"
+    }],
     staticClass: "form-select form-control",
     attrs: {
       id: "convenioForm"
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.dummySelectedInsurance = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, _vm.selectInsurances]
     }
-  })]), _vm._v(" "), _c("div", {
+  }, [_c("option", {
+    attrs: {
+      value: "",
+      disabled: "",
+      selected: ""
+    }
+  }, [_vm._v("Escolha um convênio")]), _vm._v(" "), _vm._l(_vm.insuranceList, function (insurance) {
+    return _c("option", {
+      key: insurance.chave,
+      domProps: {
+        value: insurance.chave
+      }
+    }, [_vm._v(_vm._s(insurance.valor) + "\n                    ")]);
+  })], 2)]), _vm._v(" "), _c("div", {
     staticClass: "col form-group"
   }, [_c("label", {
     staticClass: "form-label",
@@ -1991,14 +2224,34 @@ var staticRenderFns = [function () {
     staticClass: "form-select form-control",
     attrs: {
       id: "parcelasForm"
+    },
+    domProps: {
+      value: _vm.installments
     }
-  })])]), _vm._v(" "), _c("button", {
+  }, [_c("option", {
+    attrs: {
+      value: "",
+      disabled: "",
+      selected: ""
+    }
+  }, [_vm._v("Escolha a quantidade de parcelas")]), _vm._v(" "), _vm._l(_vm.installmentsList, function (installments) {
+    return _c("option", {
+      key: installments.chave,
+      domProps: {
+        value: installments.chave
+      }
+    }, [_vm._v(_vm._s(installments) + "\n                    ")]);
+  })], 2)])]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-primary",
     attrs: {
-      type: "submit"
+      type: "button"
+    },
+    on: {
+      click: _vm.getSimulationInfo
     }
   }, [_vm._v("Enviar")])])]);
-}];
+};
+var staticRenderFns = [];
 render._withStripped = true;
 
 
@@ -50091,6 +50344,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+Vue.component('currency-input', __webpack_require__(/*! ./components/CurrencyInput.vue */ "./resources/js/components/CurrencyInput.vue")["default"]);
 Vue.component('home-component', __webpack_require__(/*! ./components/Home.vue */ "./resources/js/components/Home.vue")["default"]);
 var app = new Vue({
   el: '#app'
@@ -50144,6 +50398,75 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components/CurrencyInput.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/components/CurrencyInput.vue ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CurrencyInput_vue_vue_type_template_id_22dd315e__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CurrencyInput.vue?vue&type=template&id=22dd315e */ "./resources/js/components/CurrencyInput.vue?vue&type=template&id=22dd315e");
+/* harmony import */ var _CurrencyInput_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CurrencyInput.vue?vue&type=script&lang=js */ "./resources/js/components/CurrencyInput.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _CurrencyInput_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CurrencyInput_vue_vue_type_template_id_22dd315e__WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CurrencyInput_vue_vue_type_template_id_22dd315e__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/CurrencyInput.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/CurrencyInput.vue?vue&type=script&lang=js":
+/*!***************************************************************************!*\
+  !*** ./resources/js/components/CurrencyInput.vue?vue&type=script&lang=js ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CurrencyInput_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CurrencyInput.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CurrencyInput.vue?vue&type=script&lang=js");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CurrencyInput_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/CurrencyInput.vue?vue&type=template&id=22dd315e":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/CurrencyInput.vue?vue&type=template&id=22dd315e ***!
+  \*********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_CurrencyInput_vue_vue_type_template_id_22dd315e__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ref--6!../../../node_modules/vue-loader/lib??vue-loader-options!./CurrencyInput.vue?vue&type=template&id=22dd315e */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CurrencyInput.vue?vue&type=template&id=22dd315e");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_CurrencyInput_vue_vue_type_template_id_22dd315e__WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ref_6_node_modules_vue_loader_lib_index_js_vue_loader_options_CurrencyInput_vue_vue_type_template_id_22dd315e__WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
