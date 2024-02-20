@@ -20,6 +20,14 @@ npm run dev
 
 E entrar no link do localhost `http://localhost:8000/`
 
+#### Versões de cada tecnologia/framework
+```
+PHP 7.2.34-43+ubuntu22.04.1+deb.sury.org+1
+Laravel Framework 5.8.38
+Npm 8.5.0
+Node v16.14.2
+```
+
 #### Considerações
 
 - Aqui algumas considerações a respeito do teste executado:
