@@ -62,6 +62,7 @@
                         <th scope="col">Valor por parcela</th>
                         <th scope="col">Total (valor x parcela)</th>
                         <th scope="col">Taxa de juros ao mês</th>
+                        <th scope="col">Convênio</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,6 +72,7 @@
                         <td><b>R$ {{ loanPlan["valor_parcela"].toFixed(2) }}</b></td>
                         <td><b>R$ {{ (loanPlan["valor_parcela"] * loanPlan["parcelas"]).toFixed(2) }}</b></td>
                         <td>{{ loanPlan["taxa"] }}%</td>
+                        <td>{{ loanPlan["convenio"] }}</td>
                     </tr>
                 </tbody>
             </table>

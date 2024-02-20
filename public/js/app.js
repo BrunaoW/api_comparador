@@ -2293,7 +2293,7 @@ var render = function render() {
     }, [_c("h4", [_vm._v(_vm._s(Object.keys(simulation)[0]))]), _vm._v(" "), _c("table", {
       staticClass: "table"
     }, [_vm._m(0, true), _vm._v(" "), _c("tbody", _vm._l(Object.values(simulation)[0], function (loanPlan) {
-      return _c("tr", [_c("td", [_vm._v("R$ " + _vm._s(_vm.loanSimulationInfo.loanMoney))]), _vm._v(" "), _c("td", [_c("b", [_vm._v(_vm._s(loanPlan["parcelas"]))])]), _vm._v(" "), _c("td", [_c("b", [_vm._v("R$ " + _vm._s(loanPlan["valor_parcela"].toFixed(2)))])]), _vm._v(" "), _c("td", [_c("b", [_vm._v("R$ " + _vm._s((loanPlan["valor_parcela"] * loanPlan["parcelas"]).toFixed(2)))])]), _vm._v(" "), _c("td", [_vm._v(_vm._s(loanPlan["taxa"]) + "%")])]);
+      return _c("tr", [_c("td", [_vm._v("R$ " + _vm._s(_vm.loanSimulationInfo.loanMoney))]), _vm._v(" "), _c("td", [_c("b", [_vm._v(_vm._s(loanPlan["parcelas"]))])]), _vm._v(" "), _c("td", [_c("b", [_vm._v("R$ " + _vm._s(loanPlan["valor_parcela"].toFixed(2)))])]), _vm._v(" "), _c("td", [_c("b", [_vm._v("R$ " + _vm._s((loanPlan["valor_parcela"] * loanPlan["parcelas"]).toFixed(2)))])]), _vm._v(" "), _c("td", [_vm._v(_vm._s(loanPlan["taxa"]) + "%")]), _vm._v(" "), _c("td", [_vm._v(_vm._s(loanPlan["convenio"]))])]);
     }), 0)])]);
   })], 2);
 };
@@ -2320,7 +2320,11 @@ var staticRenderFns = [function () {
     attrs: {
       scope: "col"
     }
-  }, [_vm._v("Taxa de juros ao mês")])])]);
+  }, [_vm._v("Taxa de juros ao mês")]), _vm._v(" "), _c("th", {
+    attrs: {
+      scope: "col"
+    }
+  }, [_vm._v("Convênio")])])]);
 }];
 render._withStripped = true;
 
